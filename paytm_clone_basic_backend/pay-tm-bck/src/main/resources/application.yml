@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: pay-tm-bck
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/paper_pay_db
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+
