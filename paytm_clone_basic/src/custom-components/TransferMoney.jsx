@@ -5,7 +5,7 @@ import { InputBox } from "./InputBox";
 import LaunchCard from "./LaunchCard";
 import { sendAmount, toMoneyAtom } from "../recoil-state-store/transferMoney";
 import { useNavigate } from "react-router-dom"
-import { currentBalane, userDetailsAtom } from "../recoil-state-store/DashboardAtomState";
+import { currentBalane, userDetailsAtom, userList } from "../recoil-state-store/DashboardAtomState";
 import { ErrorAtom } from "../recoil-state-store/ErrorAtom";
 import { BACKEND_SERVER } from "../env-store";
 
@@ -16,7 +16,8 @@ export default function TransferMoney() {
     const [amount, setAmount] = useRecoilState(sendAmount);
     const setErrorResponse = useSetRecoilState(ErrorAtom);
     const [currentBalance, setCurrentBalance] = useRecoilState(currentBalane);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [useList, setUserList] = useRecoilState(userList);
     return <LaunchCard>
         <Heading headingTitle={"Transfer Quick Money"}></Heading>
         <InputBox title={"From"} inpValue={userDetails.userEmail} dis={true}></InputBox>
@@ -34,30 +35,38 @@ export default function TransferMoney() {
                 setAmount(e.target.value);
             }
         }}></InputBox>
-        <CustomButton clickFunction={() => {
-            fetch(`http://${BACKEND_SERVER}/api/v1/transferMoney/${userDetails.userEmail}/${toUser}/${amount}`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': "application/json",
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`
+        <div className="flex justify-center gap-2">
+            <CustomButton btnName={"Cancel"} clickFunction={()=>{
+                setAmount(undefined);
+                setUserList(undefined)
+                navigate("/dashboard")
+            }}></CustomButton>
+            <CustomButton clickFunction={() => {
+                fetch(`http://${BACKEND_SERVER}/api/v1/transferMoney/${userDetails.userEmail}/${toUser}/${amount}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': "application/json",
+                            'Authorization': `Bearer ${localStorage.getItem("token")}`
+                        }
                     }
-                }
-            )
-                .then(async (res) => {
-                    const response = await res.json();
-                    if (response.http_status_code == 200) {
-                        setCurrentBalance(response.response.avl_balance);
-                        setAmount(undefined);
-                        navigate("/dashboard")
-                    } else {
-                        const bckErrors = response.response.errList; //Array of Errors
-                        setErrorResponse(bckErrors);
-                        setTimeout(() => {
-                            setErrorResponse(undefined);
-                        }, 3000)
-                    }
-                })
-        }} btnName={"Send Money"} isDisable={(amount == undefined || amount.trim() == "") ? true : false} ></CustomButton>
+                )
+                    .then(async (res) => {
+                        const response = await res.json();
+                        if (response.http_status_code == 200) {
+                            setCurrentBalance(response.response.avl_balance);
+                            setAmount(undefined);
+                            setUserList(undefined)
+                            navigate("/dashboard")
+                        } else {
+                            const bckErrors = response.response.errList; //Array of Errors
+                            setErrorResponse(bckErrors);
+                            setTimeout(() => {
+                                setErrorResponse(undefined);
+                            }, 3000)
+                        }
+                    })
+            }} btnName={"Send Money"} isDisable={(amount == undefined || amount.trim() == "") ? true : false} ></CustomButton>
+        </div>
     </LaunchCard>
 }

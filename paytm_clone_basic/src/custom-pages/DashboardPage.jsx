@@ -10,41 +10,41 @@ import { BACKEND_SERVER } from "../env-store";
 
 export default function DashboardPage() {
     const userDetails = useRecoilValue(userDetailsAtom);
-    const [useList,setUserList] = useRecoilState(userList);
-    const [userNotFound,setUserNotFound] = useRecoilState(userNotFoundAtom);
+    const [useList, setUserList] = useRecoilState(userList);
+    const [userNotFound, setUserNotFound] = useRecoilState(userNotFoundAtom);
     const userEmail = useRecoilValue(userEmailId);
     const currentBalance = useRecoilValue(currentBalane);
     let clock;
-    return <div className="bg-slate-400 h-screen">
+    return <div className="bg-slate-400 h-screen p-4">
         <TopBar username={userDetails.userName}></TopBar>
-        <BalanceComponent currentBalance={currentBalance==undefined?userDetails.currentBalance:currentBalance}></BalanceComponent>
-        <InputBox title={"Search Friends -> Transfer Money"} onChangeInput={(e) => {
+        <BalanceComponent currentBalance={currentBalance == undefined ? userDetails.currentBalance : currentBalance}></BalanceComponent>
+        <InputBox placeholder={"Search Users"} title={"Search Friends -> Transfer Money"} onChangeInput={(e) => {
             clearTimeout(clock);
             {
                 e.target.value.trim() != "" ?
-                clock = setTimeout(() => {
-                    fetch(`http://${BACKEND_SERVER}/api/v1/searchUsers/${e.target.value}/${localStorage.getItem("logged_in_user_email")}`, {
-                        method: "GET",
-                        headers: {
-                            'Content-Type': "application/json",
-                            'Authorization': `Bearer ${localStorage.getItem("token")}`
-                        }
-                    })
-                        .then(async (res) => {
-                            const resposne = await res.json();
-                            console.log("Response post searching users : ",resposne)
-                            if (resposne.response.userList.length > 0) {
-                                setUserList(resposne.response.userList);
-                                setUserNotFound(undefined)
-                            } else {
-                                setUserNotFound("No user Found :(")
-                                setUserList(undefined)
+                    clock = setTimeout(() => {
+                        fetch(`http://${BACKEND_SERVER}/api/v1/searchUsers/${e.target.value}/${localStorage.getItem("logged_in_user_email")}`, {
+                            method: "GET",
+                            headers: {
+                                'Content-Type': "application/json",
+                                'Authorization': `Bearer ${localStorage.getItem("token")}`
                             }
                         })
-                }, 300) : setUserList(undefined); setUserNotFound(undefined);
+                            .then(async (res) => {
+                                const resposne = await res.json();
+                                console.log("Response post searching users : ", resposne)
+                                if (resposne.response.userList.length > 0) {
+                                    setUserList(resposne.response.userList);
+                                    setUserNotFound(undefined)
+                                } else {
+                                    setUserNotFound("No user Found :(")
+                                    setUserList(undefined)
+                                }
+                            })
+                    }, 300) : setUserList(undefined); setUserNotFound(undefined);
             }
         }} ></InputBox>
-        <SearchBox> {userNotFound != undefined ? <div className="flex justify-center text-4xl font-bold">{userNotFound}</div> : (useList != undefined && useList.map(element => {
+        <SearchBox> {userNotFound != undefined ? <div className="flex justify-center text-xl font-bold">{userNotFound}</div> : (useList != undefined && useList.map(element => {
             const userShowDetails = { initial: element.friendName, userName: element.friendName, emailId: element.emailId };
             return <UserList user={userShowDetails} loggedInUser={userEmail}></UserList>
         }))}
