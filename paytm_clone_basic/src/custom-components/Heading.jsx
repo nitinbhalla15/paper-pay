@@ -1,9 +1,7 @@
 import React from "react"
 
 export const  Heading=React.memo(({ headingTitle })=> {
-    return <div className="m-2 p-2">
-        <div className="flex justify-center text-5xl">
+    return <div className="text-3xl">
             {headingTitle}
         </div>
-    </div>
 })

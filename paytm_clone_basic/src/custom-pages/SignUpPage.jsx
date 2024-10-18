@@ -4,7 +4,7 @@ import {Heading} from "../custom-components/Heading";
 import {InputBox} from "../custom-components/InputBox";
 import LaunchCard from "../custom-components/LaunchCard";
 import { userDetailsSelector, userEmailId, userFirstName, userLastName, userPassword } from "../recoil-state-store/SignUpStateAtoms";
-import {useNavigate} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import { ErrorAtom } from "../recoil-state-store/ErrorAtom";
 import { userDetailsAtom } from "../recoil-state-store/DashboardAtomState";
 import { BACKEND_SERVER } from "../env-store";
@@ -67,13 +67,12 @@ export default function SignUpPage() {
         )?true:false}></CustomButton>
         <div className="flex justify-center mt-10">
             <div>Already a User ? Go To </div>
-            <button className="bg-white text-black rounded-xl px-4 mx-3" onClick={()=>{
+            <Link className="text-black underline mx-3" to={"/sign-in"} onClick={() => {
                 setFirstName(undefined);
                 setLastName(undefined);
                 setEmailId(undefined);
                 setPassword(undefined);
-                navigate("/sign-in")
-            }}>Sign-In Page</button>
+            }}>Sign In</Link>
         </div>
     </LaunchCard>
 }
