@@ -6,10 +6,10 @@ export default function ErrorComponent({ children }) {
     return (<div className="bg-slate-400">
         {children}
         {getAllErrors != undefined && (
-            <div className="w-1/3 fixed top-4 right-4 bg-red-400 font-bold p-10 m-4 rounded-md shadow-lg shadow-indigo-500/50 ">
-                <div className="text-4xl">Error !!</div>
+            <div className="w-1/3 fixed top-4 text-red-400 right-4 bg-black p-4 rounded-md ">
+                <div className="text-2xl">Error !!</div>
                 {getAllErrors.map(key => {
-                    return <div className="uppercase text-2xl">{key}</div>
+                    return <div className="uppercase">{key}</div>
                 })}
             </div>)}
     </div>)

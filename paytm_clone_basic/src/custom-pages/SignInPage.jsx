@@ -26,7 +26,7 @@ export default function SignInPage() {
         }} title="Password" boxtype={"password"}></InputBox>
         <CustomButton clickFunction={() => {
             const signInPayload = { email: userDetails.emailId, password: userDetails.password };
-            fetch(`https://${BACKEND_SERVER}/auth/login`, {
+            fetch(`http://${BACKEND_SERVER}/auth/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json",

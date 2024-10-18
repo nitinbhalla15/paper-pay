@@ -15,7 +15,7 @@ export default function DashboardPage() {
     const userEmail = useRecoilValue(userEmailId);
     const currentBalance = useRecoilValue(currentBalane);
     let clock;
-    return <div className="bg-slate-700 h-screen">
+    return <div className="bg-slate-400 h-screen">
         <TopBar username={userDetails.userName}></TopBar>
         <BalanceComponent currentBalance={currentBalance==undefined?userDetails.currentBalance:currentBalance}></BalanceComponent>
         <InputBox title={"Search Friends -> Transfer Money"} onChangeInput={(e) => {
@@ -23,7 +23,7 @@ export default function DashboardPage() {
             {
                 e.target.value.trim() != "" ?
                 clock = setTimeout(() => {
-                    fetch(`https://${BACKEND_SERVER}/api/v1/searchUsers/${e.target.value}`, {
+                    fetch(`http://${BACKEND_SERVER}/api/v1/searchUsers/${e.target.value}/${localStorage.getItem("logged_in_user_email")}`, {
                         method: "GET",
                         headers: {
                             'Content-Type': "application/json",

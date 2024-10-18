@@ -33,7 +33,7 @@ export default function SignUpPage() {
             setPassword(e.target.value);
         }}></InputBox>
         <CustomButton clickFunction={()=>{
-            fetch(`https://${BACKEND_SERVER}/auth/signup`,
+            fetch(`http://${BACKEND_SERVER}/auth/signup`,
                 {method:"POST",
                 headers:{
                     'Content-Type':"application/json"

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 
 export default function LandingPage() {
     const navigate = useNavigate();
-    return <div className="grid grid-cols-2">
+    return <div className="h-screen bg-white grid grid-cols-2">
         <div className="">
             <div className="p-4 text-3xl font-bold">
                 Paper Pay $
@@ -17,7 +17,7 @@ export default function LandingPage() {
                 </div>
             </div>
         </div>
-        <div className="bg-lime-700">
+        <div className="bg-slate-400">
             <div className="h-screen flex flex-col justify-center">
                 <div className="flex justify-center">
                     <div className="max-w-md">

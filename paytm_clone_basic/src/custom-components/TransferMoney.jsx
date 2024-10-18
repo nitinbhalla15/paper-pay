@@ -35,7 +35,7 @@ export default function TransferMoney() {
             }
         }}></InputBox>
         <CustomButton clickFunction={() => {
-            fetch(`https://${BACKEND_SERVER}/api/v1/transferMoney/${userDetails.userEmail}/${toUser}/${amount}`,
+            fetch(`http://${BACKEND_SERVER}/api/v1/transferMoney/${userDetails.userEmail}/${toUser}/${amount}`,
                 {
                     method: "POST",
                     headers: {
@@ -48,6 +48,7 @@ export default function TransferMoney() {
                     const response = await res.json();
                     if (response.http_status_code == 200) {
                         setCurrentBalance(response.response.avl_balance);
+                        setAmount(undefined);
                         navigate("/dashboard")
                     } else {
                         const bckErrors = response.response.errList; //Array of Errors
