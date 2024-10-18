@@ -36,9 +36,9 @@ public class UserController {
         return new ResponseEntity<>(usrSevice.fetchBalanceDetails(user_email),HttpStatus.OK);
     }
 
-    @GetMapping(value = "/searchUsers/{keyword}")
-    public ResponseEntity<?> findFriends(@PathVariable("keyword") String keyword){
-        return new ResponseEntity<>(usrSevice.serachUsers(keyword),HttpStatus.OK);
+    @GetMapping(value = "/searchUsers/{keyword}/{currentUserEmail}")
+    public ResponseEntity<?> findFriends(@PathVariable("keyword") String keyword,@PathVariable("currentUserEmail") String currentUserEmail){
+        return new ResponseEntity<>(usrSevice.serachUsers(keyword,currentUserEmail),HttpStatus.OK);
     }
 
 }
