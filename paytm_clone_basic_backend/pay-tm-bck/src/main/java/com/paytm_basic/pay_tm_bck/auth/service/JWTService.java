@@ -22,7 +22,7 @@ public class JWTService {
     public String generateToken(String userEmail){
         return Jwts.builder().setSubject(userEmail)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000860*24))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
                 .signWith(getSignInKey(),SignatureAlgorithm.HS512).compact();
     }
 
