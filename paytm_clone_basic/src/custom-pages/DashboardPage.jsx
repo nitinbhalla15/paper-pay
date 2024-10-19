@@ -4,7 +4,7 @@ import { InputBox } from "../custom-components/InputBox";
 import TopBar from "../custom-components/TopBar";
 import UserList from "../custom-components/UserListComp";
 import SearchBox from "../custom-components/SearchBox";
-import {currentBalance, userList, userNotFoundAtom } from "../recoil-state-store/DashboardAtomState";
+import { currentBalance, userList, userNotFoundAtom } from "../recoil-state-store/DashboardAtomState";
 import { userEmailId } from "../recoil-state-store/AccountCreationAtom";
 import { BACKEND_SERVER } from "../env-store";
 import { useEffect, useState } from "react";
@@ -34,7 +34,7 @@ export default function DashboardPage() {
             const response = await res.json();
             console.log("response : ", response);
             setCurrentBalance(response.response.accBalance);
-            localStorage.setItem("totalBalance",response.response.accBalance);
+            localStorage.setItem("totalBalance", response.response.accBalance);
             const bckResponse = {
                 accBalance: response.response.accBalance,
                 username: response.response.userName
@@ -52,7 +52,7 @@ export default function DashboardPage() {
             //debouncing 
             clearTimeout(clock);
             {
-                (e.target.value==undefined ||e.target.value.trim() != "")?
+                (e.target.value == undefined || e.target.value.trim() != "") ?
                     clock = setTimeout(async () => {
                         try {
                             const response = await fetch(`http://${BACKEND_SERVER}/api/v1/searchUsers/${e.target.value}/${localStorage.getItem("logged_in_user_email")}`, {
@@ -71,12 +71,14 @@ export default function DashboardPage() {
                                 setUserList(undefined)
                             }
                         } catch (error) {
-                            const exp = ["System is down as of now kindly try after some time"];
-                            setIsAlert(false);
-                            setAlertResponse(exp);
-                            setTimeout(() => {
-                                setAlertResponse(undefined);
-                            }, 3000)
+                            if (e.target.value == undefined) {
+                                const exp = ["System is down as of now kindly try after some time"];
+                                setIsAlert(false);
+                                setAlertResponse(exp);
+                                setTimeout(() => {
+                                    setAlertResponse(undefined);
+                                }, 3000)
+                            }
                         }
                     }, 300) : setUserList(undefined); setUserNotFound(undefined)
             }
