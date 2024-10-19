@@ -1,14 +1,12 @@
-import { useRecoilValue, useSetRecoilState } from "recoil"
 import React from "react";
-export const InputBox = React.memo(({title,boxtype,inpValue,dis,minimum,onChangeInput})=>{
-    console.log("Input box renders")
-    return <div className="m-2 p-4 flex flex-col">
-        <div className="mt-4 text-xl font-bold">
+export const InputBox = React.memo(({title,boxtype,inpValue,dis,minimum,onChangeInput,placeholder})=>{
+    return <div className="mt-4">
+        <div className="text-left font-bold">
             {title}
         </div>
-        <div className="mt-4 text-black">
+        <div className="text-black">
             <input onChange={onChangeInput}
-            className="rounded-xl w-full p-4" type={`${boxtype}`} value={inpValue} disabled={dis} placeholder={`Enter your ${title}`} min={minimum}></input>
+            className="rounded-md mt-2 w-full p-2 border-2" type={`${boxtype}`} value={inpValue} disabled={dis} placeholder={(placeholder!=undefined)?placeholder:`Enter your ${title}`} min={minimum}></input>
         </div>
     </div>
 })

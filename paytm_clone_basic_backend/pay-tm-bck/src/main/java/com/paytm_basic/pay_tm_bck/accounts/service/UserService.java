@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -64,21 +65,22 @@ public class UserService {
         BckResponse bckResponseData = new BckResponse();
         Map<String,Object> resData = new HashMap<>();
         Long accBalance = bnkRepo.findBankDetailsByEmailId(user_email);
+        SignUpDetails userDetails = usrRepo.findUserBySubject(user_email).orElse(null);
         bckResponseData.setHttp_status_code(200);
         resData.put("accBalance",accBalance);
+        resData.put("userName",userDetails.getFirstName()+" "+userDetails.getLastName());
         bckResponseData.setResponse(resData);
         return bckResponseData;
     }
 
-    public BckResponse serachUsers(String keyword){
+    public BckResponse serachUsers(String keyword,String currentUserEmail){
         BckResponse bckResponse = new BckResponse();
         Map<String,Object> resData = new HashMap<>();
-        List<FriendsPojo> allUserList = new ArrayList<>();
+        List<FriendsPojo> allUserList = null;
         try{
             List<SignUpDetails> userList = usrRepo.findUsersWithName(keyword);
-            userList.forEach((item)->{
-                allUserList.add(new FriendsPojo(item.getEmailId(),item.getFirstName()+" "+item.getLastName()));
-            });
+            allUserList =
+                    userList.stream().filter(usr -> !usr.getEmailId().equalsIgnoreCase(currentUserEmail)).map(usr -> new FriendsPojo(usr.getEmailId(),usr.getFirstName()+" "+usr.getLastName())).collect(Collectors.toList());
             bckResponse.setHttp_status_code(200);
             resData.put("userList",allUserList);
             bckResponse.setResponse(resData);

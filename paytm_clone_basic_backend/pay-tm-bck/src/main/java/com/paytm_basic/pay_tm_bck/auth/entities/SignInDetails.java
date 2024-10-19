@@ -15,7 +15,7 @@ public class SignInDetails {
 
     @NonNull
     @NotNull
-    @Email
+    @Email(regexp = "[A-Za-z0-9\\._%+\\-]+@[A-Za-z0-9\\.\\-]+\\.[A-Za-z]{2,}",message = "Email has to be in a well defined format")
     private String email;
     @NotNull
     @NotBlank

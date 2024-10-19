@@ -1,7 +1,5 @@
 export default function BalanceComponent({currentBalance}){
-    return <div className="m-2 p-4 text-white text-2xl">
-
+    return <div className="p-2 text-lg bg-black text-white  max-w-52 mt-4 rounded-md text-center">
             Your Balance : $ {currentBalance}
-
     </div>
 }

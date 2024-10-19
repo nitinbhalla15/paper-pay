@@ -3,60 +3,84 @@ import CustomButton from "./CustomButton";
 import { Heading } from "./Heading";
 import { InputBox } from "./InputBox";
 import LaunchCard from "./LaunchCard";
-import { sendAmount, toMoneyAtom } from "../recoil-state-store/transferMoney";
+import { sendAmount, toMoneyAtom } from "../recoil-state-store/TransferMoneyAtom";
 import { useNavigate } from "react-router-dom"
-import { currentBalane, userDetailsAtom } from "../recoil-state-store/DashboardAtomState";
-import { ErrorAtom } from "../recoil-state-store/ErrorAtom";
+import {  currentBalance, userList } from "../recoil-state-store/DashboardAtomState";
+import { AlertAtom, isAlert } from "../recoil-state-store/AlertAtom";
 import { BACKEND_SERVER } from "../env-store";
 
 
 export default function TransferMoney() {
-    const userDetails = useRecoilValue(userDetailsAtom);
     const toUser = useRecoilValue(toMoneyAtom);
     const [amount, setAmount] = useRecoilState(sendAmount);
-    const setErrorResponse = useSetRecoilState(ErrorAtom);
-    const [currentBalance, setCurrentBalance] = useRecoilState(currentBalane);
-    const navigate = useNavigate()
+    const setAlertResponse = useSetRecoilState(AlertAtom);
+    const setIsAlert = useSetRecoilState(isAlert);
+    const navigate = useNavigate();
+    const [useList, setUserList] = useRecoilState(userList);
+    const balance = useRecoilValue(currentBalance);
     return <LaunchCard>
         <Heading headingTitle={"Transfer Quick Money"}></Heading>
-        <InputBox title={"From"} inpValue={userDetails.userEmail} dis={true}></InputBox>
-        <InputBox title={"To"} inpValue={toUser} dis={true}></InputBox>
-        <InputBox title={"Available Balance"} inpValue={currentBalance == undefined ? userDetails.currentBalance : currentBalance} dis={true}></InputBox>
+        <InputBox title={"From"} inpValue={localStorage.getItem("logged_in_user_email")} dis={true}></InputBox>
+        <InputBox title={"To"} inpValue={(toUser==undefined?localStorage.getItem("toUser"):toUser)} dis={true}></InputBox>
+        <InputBox title={"Available Balance"} inpValue={(balance==undefined?localStorage.getItem("totalBalance"):balance)} dis={true}></InputBox>
         <InputBox title={"Amount To Transfer"} boxtype={"number"} minimum={"1"} onChangeInput={(e) => {
             if (parseInt(e.target.value) <= 0) {
                 let errArray = ["Money to be transfered has to be greater than 0 "]
-                setErrorResponse(errArray);
+                setIsAlert(false);
+                setAlertResponse(errArray);
                 setTimeout(() => {
-                    setErrorResponse(undefined);
+                    setAlertResponse(undefined);
                 }, 3000)
                 setAmount(undefined);
             } else {
                 setAmount(e.target.value);
             }
         }}></InputBox>
-        <CustomButton clickFunction={() => {
-            fetch(`https://${BACKEND_SERVER}/api/v1/transferMoney/${userDetails.userEmail}/${toUser}/${amount}`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': "application/json",
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`
-                    }
-                }
-            )
-                .then(async (res) => {
-                    const response = await res.json();
-                    if (response.http_status_code == 200) {
-                        setCurrentBalance(response.response.avl_balance);
+        <div className="flex justify-center gap-2">
+            <CustomButton btnName={"Cancel"} clickFunction={() => {
+                setAmount(undefined);
+                setUserList(undefined);
+                navigate("/dashboard");
+            }}></CustomButton>
+            <CustomButton clickFunction={async () => {
+                try {
+                    const resposne = await fetch(`http://${BACKEND_SERVER}/api/v1/transferMoney/${localStorage.getItem("logged_in_user_email")}/${(toUser==undefined?localStorage.getItem("toUser"):toUser)}/${amount}`,
+                        {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': "application/json",
+                                'Authorization': `Bearer ${localStorage.getItem("token")}`
+                            }
+                        }
+                    );
+                    const finalResposne = await resposne.json();
+                    if (finalResposne.http_status_code == 200) {
+                        setAmount(undefined);
+                        setUserList(undefined);
+                        setIsAlert(true);
+                        setAlertResponse(["Money Transfered !!"])
+                        setTimeout(() => {
+                            setAlertResponse(undefined);
+                        }, 3000)
                         navigate("/dashboard")
                     } else {
-                        const bckErrors = response.response.errList; //Array of Errors
-                        setErrorResponse(bckErrors);
+                        const bckErrors = finalResposne.response.errList; //Array of Errors
+                        setIsAlert(false);
+                        setAlertResponse(bckErrors);
                         setTimeout(() => {
-                            setErrorResponse(undefined);
+                            setAlertResponse(undefined);
                         }, 3000)
                     }
-                })
-        }} btnName={"Send Money"} isDisable={(amount == undefined || amount.trim() == "") ? true : false} ></CustomButton>
+                } catch (error) {
+                    const exp = ["System is down as of now kindly try after some time"];
+                    setIsAlert(false);
+                    setAlertResponse(exp);
+                    setTimeout(() => {
+                        setAlertResponse(undefined);
+                    }, 3000)
+                    navigate("/dashboard")
+                }
+            }} btnName={"Send Money"} isDisable={(amount == undefined || amount.trim() == "") ? true : false} ></CustomButton>
+        </div>
     </LaunchCard>
 }
