@@ -65,8 +65,10 @@ public class UserService {
         BckResponse bckResponseData = new BckResponse();
         Map<String,Object> resData = new HashMap<>();
         Long accBalance = bnkRepo.findBankDetailsByEmailId(user_email);
+        SignUpDetails userDetails = usrRepo.findUserBySubject(user_email).orElse(null);
         bckResponseData.setHttp_status_code(200);
         resData.put("accBalance",accBalance);
+        resData.put("userName",userDetails.getFirstName()+" "+userDetails.getLastName());
         bckResponseData.setResponse(resData);
         return bckResponseData;
     }
