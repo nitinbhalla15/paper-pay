@@ -6,26 +6,25 @@ import SignUpPage from './custom-pages/SignUpPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoutes from './utils/ProtectedRoutes'
 import RouteNotFound from './custom-pages/RouteNotFound'
-import ErrorComponent from './custom-components/ErrorComponent'
 import LandingPage from './custom-pages/LandingPage'
+import AlertComponent from './custom-components/AlertComponent'
 
 function App() {
   return (
-    <ErrorComponent>
+    <AlertComponent>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage></LandingPage>}></Route>
-          <Route path='/sign-up' element={<SignUpPage></SignUpPage>}></Route>
-          <Route path='/sign-in' element={<SignInPage></SignInPage>}></Route>
-          <Route path="/error" element={<ErrorComponent></ErrorComponent>}></Route>
           <Route element={<ProtectedRoutes></ProtectedRoutes>}>
             <Route path='/dashboard' element={<DashboardPage></DashboardPage>}></Route>
             <Route path='/transferMoney' element={<TransferMoney></TransferMoney>} ></Route>
           </Route>
+          <Route path="/" element={<LandingPage></LandingPage>}></Route>
+          <Route path='/sign-up' element={<SignUpPage></SignUpPage>}></Route>
+          <Route path='/sign-in' element={<SignInPage></SignInPage>}></Route>
           <Route path="*" element={<RouteNotFound></RouteNotFound>}></Route>
         </Routes>
       </BrowserRouter>
-    </ErrorComponent>
+    </AlertComponent>
   )
 }
 

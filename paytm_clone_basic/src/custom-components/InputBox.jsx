@@ -1,4 +1,3 @@
-import { useRecoilValue, useSetRecoilState } from "recoil"
 import React from "react";
 export const InputBox = React.memo(({title,boxtype,inpValue,dis,minimum,onChangeInput,placeholder})=>{
     return <div className="mt-4">

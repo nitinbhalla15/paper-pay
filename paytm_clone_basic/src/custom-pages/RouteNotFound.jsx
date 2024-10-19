@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import LaunchCard from "../custom-components/LaunchCard";
 import { useSetRecoilState } from "recoil";
-import { userEmailId, userFirstName, userLastName, userPassword } from "../recoil-state-store/SignUpStateAtoms";
+import { userEmailId, userFirstName, userLastName, userPassword } from "../recoil-state-store/AccountCreationAtom";
 
 export default function RouteNotFound() {
     const navigate = useNavigate();
